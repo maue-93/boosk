@@ -4,12 +4,13 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { User, UserSchema } from './schemas/user.schema';
 import { AuthService } from './auth.service';
 import { PassportModule } from '@nestjs/passport';
-import { JwtModule, JwtService } from '@nestjs/jwt';
+import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import {
   ACCESS_JWT_SERVICE,
   REFRESH_JWT_SERVICE,
 } from './constants/jwt.service.names';
+import { JwtStrategy } from './strategies/jwt.strategy';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import {
   controllers: [AuthController],
   providers: [
     AuthService,
+    JwtStrategy,
 
     // JWT Service for the access token
     {
@@ -53,5 +55,7 @@ import {
       inject: [ConfigService],
     },
   ],
+
+  exports: [JwtStrategy],
 })
 export class AuthModule {}
