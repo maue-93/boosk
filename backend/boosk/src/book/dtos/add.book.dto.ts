@@ -23,13 +23,12 @@ export class AddBookDto {
   @Matches(/^M{0,4}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})$/, {
     message: 'lastFrontMatterPage must be a valid Roman numeral',
   })
-  lastFrontMatter?: string;
+  lastFrontMatterPage?: string;
 
   @IsOptional()
   @IsRomanOrNumber()
   readingFromPage?: string | number;
 
-  @IsNumber()
   @IsRomanOrNumber()
   readingToPage: string | number;
 

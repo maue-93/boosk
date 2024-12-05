@@ -8,6 +8,8 @@ import { CreateBookDto } from './dtos/create.book.dto';
 import { CreateAuthorDto } from './dtos/create.author.dto';
 import { AddBookDto } from './dtos/add.book.dto';
 import { UserBook } from './schemas/user.book.schema';
+import { AddBookRawDto } from './dtos/add.book.raw.dto';
+import { CreateAuthorsDto } from './dtos/create.authors.dto';
 
 @Injectable()
 export class BookService {
@@ -17,7 +19,7 @@ export class BookService {
     @InjectModel(UserBook.name) private readonly userBookModel: Model<UserBook>,
   ) {}
 
-  async createAuthor(createAuthorDto: CreateAuthorDto): Promise<Author> {
+  async findOrCreateAuthor(createAuthorDto: CreateAuthorDto): Promise<Author> {
     const { name } = createAuthorDto;
 
     // check if the author already exist in the database
@@ -30,7 +32,19 @@ export class BookService {
     return author;
   }
 
-  async createBook(createBookDto: CreateBookDto): Promise<Book> {
+  async findOrCreateAuthors(
+    createAuthorsDto: CreateAuthorsDto,
+  ): Promise<Author[]> {
+    const { authors } = createAuthorsDto;
+
+    let authorsList: Author[] = await Promise.all(
+      authors.map((author) => this.findOrCreateAuthor({ name: author })),
+    );
+
+    return authorsList;
+  }
+
+  async findOrCreateBook(createBookDto: CreateBookDto): Promise<Book> {
     const { title, authors } = createBookDto;
 
     // check if the book already exist in the database
@@ -60,5 +74,45 @@ export class BookService {
     }
     // else, return the existing userbook instance
     return userBook;
+  }
+
+  async addBookRaw(addBookRawDto: AddBookRawDto): Promise<UserBook> {
+    const {
+      user,
+      authors,
+      title,
+      lastFrontMatterPage,
+      readingFromPage,
+      readingToPage,
+      comment,
+    } = addBookRawDto;
+
+    // get the list of authors object found or created
+    const authorsList = await this.findOrCreateAuthors({ authors });
+    const authorIds = await Promise.all(
+      authorsList.map(async (author) =>
+        (await this.authorModel.findOne({ name: author }))._id.toString(),
+      ),
+    );
+
+    // create or find the book
+    const book = await this.findOrCreateBook({ title, authors: authorIds });
+
+    // get book id in string
+    const bookId = (
+      await this.bookModel.findOne({ title: book.title })
+    )._id.toString();
+
+    // create or find the userbook
+    const userbook = await this.addBook({
+      user,
+      book: bookId,
+      lastFrontMatterPage,
+      readingFromPage,
+      readingToPage,
+      comment,
+    });
+
+    return userbook;
   }
 }
