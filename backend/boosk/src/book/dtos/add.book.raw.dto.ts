@@ -10,10 +10,6 @@ import {
 import { IsRomanOrNumber } from '../validators/book.dto.validators';
 
 export class AddBookRawDto {
-  @IsMongoId()
-  @IsNotEmpty()
-  user: string;
-
   @IsString()
   @IsNotEmpty()
   title: string;
@@ -40,3 +36,23 @@ export class AddBookRawDto {
   @IsString()
   comment?: string;
 }
+
+export class AddBookRawWithUserDto extends AddBookRawDto {
+  @IsMongoId()
+  @IsNotEmpty()
+  user: string;
+}
+
+// const a = {
+//   "title": "a new book",
+
+//   "authors": ["eliso", "Paige Emma Knight Lavelanet" ,"Rober Greene", "Dag Hedward-Mills"],
+
+//   "lastFrontMatterPage": "ix",
+
+//   "readingFromPage": 7,
+
+//   "readingToPage": 200,
+
+//   "comment": ""
+// }

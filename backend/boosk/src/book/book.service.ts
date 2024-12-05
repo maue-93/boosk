@@ -8,7 +8,7 @@ import { CreateBookDto } from './dtos/create.book.dto';
 import { CreateAuthorDto } from './dtos/create.author.dto';
 import { AddBookDto } from './dtos/add.book.dto';
 import { UserBook } from './schemas/user.book.schema';
-import { AddBookRawDto } from './dtos/add.book.raw.dto';
+import { AddBookRawDto, AddBookRawWithUserDto } from './dtos/add.book.raw.dto';
 import { CreateAuthorsDto } from './dtos/create.authors.dto';
 
 @Injectable()
@@ -76,7 +76,9 @@ export class BookService {
     return userBook;
   }
 
-  async addBookRaw(addBookRawDto: AddBookRawDto): Promise<UserBook> {
+  async addBookRaw(
+    addBookRawWithUserDto: AddBookRawWithUserDto,
+  ): Promise<UserBook> {
     const {
       user,
       authors,
@@ -85,14 +87,16 @@ export class BookService {
       readingFromPage,
       readingToPage,
       comment,
-    } = addBookRawDto;
+    } = addBookRawWithUserDto;
 
     // get the list of authors object found or created
     const authorsList = await this.findOrCreateAuthors({ authors });
+
     const authorIds = await Promise.all(
-      authorsList.map(async (author) =>
-        (await this.authorModel.findOne({ name: author }))._id.toString(),
-      ),
+      authorsList.map(async (author) => {
+        const authorObj = await this.authorModel.findOne({ name: author.name });
+        return authorObj._id.toString();
+      }),
     );
 
     // create or find the book

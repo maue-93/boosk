@@ -21,11 +21,11 @@ export class UserBook {
   })
   book: Book;
 
-  @Prop()
-  lastFrontMatterPage?: string | null;
-  @Prop()
+  @Prop({ required: false })
+  lastFrontMatterPage?: string;
+  @Prop({ required: false, type: mongoose.Schema.Types.Mixed })
   readingFromPage?: string | number;
-  @Prop({ required: true })
+  @Prop({ required: true, type: mongoose.Schema.Types.Mixed })
   readingToPage: string | number;
 
   @Prop()

@@ -12,7 +12,7 @@ import {
 import { SignUpDto } from './dtos/signup.dto';
 import { LogInDto } from './dtos/login.dto';
 import { ChangePasswordDto } from './dtos/changepassword.dto';
-import { JwtPayload } from './types/jwt.payload.type';
+import { JwtPayloadType } from './types/jwt.payload.type';
 
 @Injectable()
 export class AuthService {
@@ -65,7 +65,7 @@ export class AuthService {
     }
 
     // get accessToken and refreshToken
-    const payload: JwtPayload = { id: user.id, email };
+    const payload: JwtPayloadType = { id: user.id, email };
     const accessToken = this.accessJwtService.sign(payload);
     const refreshToken = this.refreshJwtService.sign(payload);
 
