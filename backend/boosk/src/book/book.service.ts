@@ -56,7 +56,7 @@ export class BookService {
     const userBook = await this.userBookModel.findOne({ user, book });
     // if the book is a new author, create one
     if (!userBook) {
-      return await this.userBookModel.create({ user, book });
+      return await this.userBookModel.create(addBookDto);
     }
     // else, return the existing userbook instance
     return userBook;
