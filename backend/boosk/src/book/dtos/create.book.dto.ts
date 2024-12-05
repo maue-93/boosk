@@ -1,6 +1,6 @@
 import { IsArray, IsMongoId, IsNotEmpty, IsString } from 'class-validator';
 
-export class AddBookDto {
+export class CreateBookDto {
   @IsString()
   @IsNotEmpty()
   readonly title: string;
