@@ -6,7 +6,6 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { Author, AuthorSchema } from './schemas/author.schema';
 import { PassportModule } from '@nestjs/passport';
 import { Book, BookSchema } from './schemas/book.schema';
-import { UserBook, UserBookSchema } from './schemas/user.book.schema';
 
 @Module({
   imports: [
@@ -17,12 +16,6 @@ import { UserBook, UserBookSchema } from './schemas/user.book.schema';
 
     // connect the app with mongodb's books collection that follows the BookSchema
     MongooseModule.forFeature([{ name: Book.name, schema: BookSchema }]),
-
-    // connect the app with mongodb's userbooks collection that follows the UserBookSchema
-    // UserBook model is the link of a certain user to the book they read
-    MongooseModule.forFeature([
-      { name: UserBook.name, schema: UserBookSchema },
-    ]),
 
     // seting up the authentication handler
     PassportModule.register({ defaultStrategy: 'jwt' }),
