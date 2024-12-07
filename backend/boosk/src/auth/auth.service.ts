@@ -42,8 +42,9 @@ export class AuthService {
     });
 
     // get accessToken and refreshToken
-    const accessToken = this.accessJwtService.sign({ id: user._id });
-    const refreshToken = this.refreshJwtService.sign({ id: user._id });
+    const jwtPayload: JwtPayloadType = { id: user.id, email };
+    const accessToken = this.accessJwtService.sign(jwtPayload);
+    const refreshToken = this.refreshJwtService.sign(jwtPayload);
 
     return { accessToken, refreshToken };
   }
